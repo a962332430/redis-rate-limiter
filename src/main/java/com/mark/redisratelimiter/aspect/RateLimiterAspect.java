@@ -5,6 +5,7 @@ import com.mark.redisratelimiter.RedisUtil;
 import com.mark.redisratelimiter.annotation.RedisRateLimiter;
 import com.mark.redisratelimiter.ratelimit.RateLimitClient;
 import com.mark.redisratelimiter.ratelimit.Token;
+import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.Signature;
 import org.aspectj.lang.annotation.Around;
@@ -29,6 +30,7 @@ import java.lang.reflect.Method;
 @Component
 @Aspect
 @Order(1)
+@Slf4j
 public class RateLimiterAspect {
 
     @Autowired
@@ -81,7 +83,8 @@ public class RateLimiterAspect {
 
         Token token = rateLimitClient.acquireToken(key);
         if (!token.isSuccess()) {
-            throw new RuntimeException("this request has been limited to access..");
+            log.error("this request has been limited to access..");
+//            throw new RuntimeException("this request has been limited to access..");
         }
 
     }

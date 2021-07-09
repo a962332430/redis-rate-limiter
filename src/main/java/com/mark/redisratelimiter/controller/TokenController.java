@@ -81,7 +81,7 @@ public class TokenController {
 
     @GetMapping("test")
     @ResponseBody
-    @RedisRateLimiter(rate = "20")
+    @RedisRateLimiter(rate = "100")
     public int test() {
         count.getAndIncrement();
         int curRequest = count.get();

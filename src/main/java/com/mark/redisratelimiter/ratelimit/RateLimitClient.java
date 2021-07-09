@@ -41,7 +41,7 @@ public class RateLimitClient {
          "app",ARGV[5])
          */
         Long acquire = stringRedisTemplate.execute(ratelimitInitLua,
-                Collections.singletonList(getKey(key)), currMillSecond.toString(), "1", "10", rate, "test");
+                Collections.singletonList(getKey(key)), currMillSecond.toString(), "1", "1000", rate, "test");
         if (acquire == 1) {
             token = Token.SUCCESS;
         } else if (acquire == 0) {
