@@ -1,6 +1,7 @@
 package com.mark.redisratelimiter.config;
 
 import com.mark.redisratelimiter.ratelimit.RateLimitClient;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.ApplicationListener;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Component;
  * @version 1.0
  */
 @Component
+@Slf4j
 public class AppLaunchStartEvent implements ApplicationListener<ApplicationReadyEvent> {
 
     @Autowired
@@ -20,6 +22,6 @@ public class AppLaunchStartEvent implements ApplicationListener<ApplicationReady
 
     @Override
     public void onApplicationEvent(ApplicationReadyEvent applicationReadyEvent) {
-        rateLimitClient.initToken("skynet");
+        log.info("app started..");
     }
 }

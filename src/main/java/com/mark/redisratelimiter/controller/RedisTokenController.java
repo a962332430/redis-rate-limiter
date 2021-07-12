@@ -2,7 +2,6 @@ package com.mark.redisratelimiter.controller;
 
 import com.mark.redisratelimiter.annotation.RedisRateLimiter;
 import com.mark.redisratelimiter.ratelimit.RateLimitClient;
-import com.mark.redisratelimiter.ratelimit.Token;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -34,8 +33,7 @@ public class RedisTokenController {
     @GetMapping(value = "/getToken")
     @ResponseBody
     public String getToken(String key) {
-        Token token = rateLimitClient.acquireToken(rateLimitClient.getKey(key));
-        if (token.isSuccess()) {
+        if (rateLimitClient.tryAcquire(key)) {
             return "success";
         } else {
             return "failed";
@@ -81,7 +79,7 @@ public class RedisTokenController {
 
     @GetMapping("test")
     @ResponseBody
-    @RedisRateLimiter(rate = "100")
+    @RedisRateLimiter(rate = 100)
     public int test() {
         count.getAndIncrement();
         int curRequest = count.get();

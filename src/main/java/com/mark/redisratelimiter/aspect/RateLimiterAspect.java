@@ -1,14 +1,11 @@
 package com.mark.redisratelimiter.aspect;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.mark.redisratelimiter.RedisUtil;
 import com.mark.redisratelimiter.annotation.RedisRateLimiter;
 import com.mark.redisratelimiter.ratelimit.RateLimitClient;
-import com.mark.redisratelimiter.ratelimit.Token;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.Signature;
-import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.annotation.Pointcut;
@@ -32,9 +29,6 @@ import java.lang.reflect.Method;
 @Order(1)
 @Slf4j
 public class RateLimiterAspect {
-
-    @Autowired
-    private RedisUtil redisUtil;
 
     @Autowired
     private RateLimitClient rateLimitClient;
@@ -76,13 +70,8 @@ public class RateLimiterAspect {
         RedisRateLimiter redisRateLimiter= targetMethod.getAnnotation(RedisRateLimiter.class);
 
         // 获取自定义注解中rate属性的值(每秒钟产生令牌数量，即并发量)
-        String rate = redisRateLimiter.rate();
-        if(!redisUtil.hasKey(rateLimitClient.getKey(key))) {
-            rateLimitClient.initToken(key, rate);
-        }
-
-        Token token = rateLimitClient.acquireToken(key);
-        if (!token.isSuccess()) {
+        Integer rate = redisRateLimiter.rate();
+        if (!rateLimitClient.tryAcquire(key, rate)) {
             log.error("this request has been limited to access..");
 //            throw new RuntimeException("this request has been limited to access..");
         }
