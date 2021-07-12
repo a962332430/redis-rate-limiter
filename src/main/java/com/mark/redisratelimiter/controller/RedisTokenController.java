@@ -21,7 +21,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 @RestController
 @Slf4j
-public class TokenController {
+public class RedisTokenController {
 
     private static final Integer REQUEST_NUM = 50;
 
